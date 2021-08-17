@@ -49,6 +49,18 @@ class UserController extends Controller
 
         }
     }
+    public function logout(Request $request) {
+        $apiToken = $request->header('Authorization');
+        if (empty($apiToken)) {
+            return response()->json(['status' => false,'message' => 'Missing Authorization header!'],422);
+        }
+        $apiToken = str_replace('Bearer ', '', $apiToken);
+        $user = User::where('api_token', $apiToken)->update(['api_token' => NULL]);
+        if ($user) {
+            return response()->json(['status' => true,'message' => 'Logout successful!']);
+        }
+        return response()->json(['status' => false,'message' => 'Missing Authorization header!'],422);
+    }
 
     /**
      * Show the form for creating a new resource.
