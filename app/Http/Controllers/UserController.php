@@ -28,10 +28,26 @@ class UserController extends Controller
         User::create([
             'name' => $data['name'],
             'email' => $data['email'],
-            'password' =>bcrypt($data['password']),
+            'password' =>$data['password'],
             'api_token' => $apiToken
         ]);
         return response()->json(['status' => true,'message' => 'User registered successfully!'],201);
+    }
+    public function login(Request $request) {
+        $data = $request->all();
+        $apiToken = Str::random(80);
+        if($data) {
+           $user = User::where('email',$data['email'])->first();
+           if($user) {
+               if($user->password == $data['password']) {
+                   User::where('email',$data['email'])->update(['api_token' => $apiToken]);
+                   return response()->json(['status' => true,'message' => 'Login successfully!','api_token' => $apiToken],200);
+               }
+               return response()->json(['status' => false,'message' => 'Wrong password!'],422);
+           }
+            return response()->json(['status' => false,'message' => 'Wrong email!'],422);
+
+        }
     }
 
     /**
