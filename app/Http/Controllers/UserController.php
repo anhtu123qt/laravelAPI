@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Str;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\UserCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -21,8 +22,16 @@ class UserController extends Controller
         return response()->json(['data' => $users],200);
 
     }
-    public function register() {
-
+    public function register(Request $request) {
+        $data = $request->all();
+        $apiToken = Str::random(80);
+        User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' =>bcrypt($data['password']),
+            'api_token' => $apiToken
+        ]);
+        return response()->json(['status' => true,'message' => 'User registered successfully!'],201);
     }
 
     /**
