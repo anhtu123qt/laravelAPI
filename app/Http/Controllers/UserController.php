@@ -21,6 +21,9 @@ class UserController extends Controller
         return response()->json(['data' => $users],200);
 
     }
+    public function register() {
+
+    }
 
     /**
      * Show the form for creating a new resource.
